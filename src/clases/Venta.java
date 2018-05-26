@@ -3,7 +3,9 @@ package clases;
 public class Venta {
 
 	private String nif;
-	private String articulo;
+	private String nombreArticulo;
+	private Fabricante fabricante;
+	private Articulo articulo;
 	private int codFabricante;
 	private int peso;
 	private String categoria;
@@ -14,10 +16,12 @@ public class Venta {
 
 	}
 
-	public Venta(String nif, String articulo, int codFabricante, int peso, String categoria, String fechaVenta,
-			int unidadesVendidas) {
+	public Venta(String nif, String nombreArticulo, Fabricante fabricante, Articulo articulo, int codFabricante,
+			int peso, String categoria, String fechaVenta, int unidadesVendidas) {
 
 		this.nif = nif;
+		this.nombreArticulo = nombreArticulo;
+		this.fabricante = fabricante;
 		this.articulo = articulo;
 		this.codFabricante = codFabricante;
 		this.peso = peso;
@@ -32,14 +36,6 @@ public class Venta {
 
 	public void setNif(String nif) {
 		this.nif = nif;
-	}
-
-	public String getArticulo() {
-		return articulo;
-	}
-
-	public void setArticulo(String articulo) {
-		this.articulo = articulo;
 	}
 
 	public int getCodFabricante() {
@@ -82,11 +78,35 @@ public class Venta {
 		this.unidadesVendidas = unidadesVendidas;
 	}
 
+	public Fabricante getFabricante() {
+		return fabricante;
+	}
+
+	public void setFabricante(Fabricante fabricante) {
+		this.fabricante = fabricante;
+	}
+
+	public String getNombreArticulo() {
+		return nombreArticulo;
+	}
+
+	public void setNombreArticulo(String nombreArticulo) {
+		this.nombreArticulo = nombreArticulo;
+	}
+
+	public void setArticulo(Articulo articulo) {
+		this.articulo = articulo;
+	}
+
+	public Articulo getArticulo() {
+		return articulo;
+	}
+
 	@Override
 	public String toString() {
-		return "Venta [nif=" + nif + ", articulo=" + articulo + ", codFabricante=" + codFabricante + ", peso=" + peso
-				+ ", categoria=" + categoria + ", fechaVenta=" + fechaVenta + ", unidadesVendidas=" + unidadesVendidas
-				+ "]";
+		return "Venta [nif=" + nif + ", nombreArticulo=" + nombreArticulo + ", fabricante=" + fabricante + ", articulo="
+				+ articulo + ", codFabricante=" + codFabricante + ", peso=" + peso + ", categoria=" + categoria
+				+ ", fechaVenta=" + fechaVenta + ", unidadesVendidas=" + unidadesVendidas + "]";
 	}
 
 }

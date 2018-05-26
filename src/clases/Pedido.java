@@ -3,7 +3,9 @@ package clases;
 public class Pedido {
 
 	private String nif;
-	private String articulo;
+	private String nombreArticulo;
+	private Fabricante fabricante;
+	private Articulo articulo;
 	private int codFabricante;
 	private int peso;
 	private String categoria;
@@ -14,10 +16,12 @@ public class Pedido {
 
 	}
 
-	public Pedido(String nif, String articulo, int codFabricante, int peso, String categoria, String fechaPedido,
-			int unidadesPedidas) {
-
+	public Pedido(String nif, String nombreArticulo, Fabricante fabricante, Articulo articulo, int codFabricante,
+			int peso, String categoria, String fechaPedido, int unidadesPedidas) {
+		
 		this.nif = nif;
+		this.nombreArticulo = nombreArticulo;
+		this.fabricante = fabricante;
 		this.articulo = articulo;
 		this.codFabricante = codFabricante;
 		this.peso = peso;
@@ -34,11 +38,27 @@ public class Pedido {
 		this.nif = nif;
 	}
 
-	public String getArticulo() {
+	public String getNombreArticulo() {
+		return nombreArticulo;
+	}
+
+	public void setNombreArticulo(String nombreArticulo) {
+		this.nombreArticulo = nombreArticulo;
+	}
+
+	public Fabricante getFabricante() {
+		return fabricante;
+	}
+
+	public void setFabricante(Fabricante fabricante) {
+		this.fabricante = fabricante;
+	}
+
+	public Articulo getArticulo() {
 		return articulo;
 	}
 
-	public void setArticulo(String articulo) {
+	public void setArticulo(Articulo articulo) {
 		this.articulo = articulo;
 	}
 
@@ -84,9 +104,12 @@ public class Pedido {
 
 	@Override
 	public String toString() {
-		return "Pedido [nif=" + nif + ", articulo=" + articulo + ", codFabricante=" + codFabricante + ", peso=" + peso
-				+ ", categoria=" + categoria + ", fechaPedido=" + fechaPedido + ", unidadesPedidas=" + unidadesPedidas
-				+ "]";
+		return "Pedido [nif=" + nif + ", nombreArticulo=" + nombreArticulo + ", fabricante=" + fabricante
+				+ ", articulo=" + articulo + ", codFabricante=" + codFabricante + ", peso=" + peso + ", categoria="
+				+ categoria + ", fechaPedido=" + fechaPedido + ", unidadesPedidas=" + unidadesPedidas + "]";
 	}
+
+	
+
 
 }

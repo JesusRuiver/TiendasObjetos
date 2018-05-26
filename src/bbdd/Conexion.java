@@ -17,7 +17,11 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import clases.Articulo;
+import clases.Fabricante;
+import clases.Pedido;
 import clases.Tienda;
+import clases.Venta;
 
 public class Conexion {
 
@@ -46,17 +50,15 @@ public class Conexion {
 
 	public void conectar() {
 
-		
-		 this.forName = "com.mysql.jdbc.Driver"; 
-		 this.servidor = "jdbc:mysql://localhost/"; 
-		 this.baseDatos = "tiendas"; 
-		 this.usuario = "tiendas"; 
-		 this.pass = "tiendas";
-		 
+		this.forName = "com.mysql.jdbc.Driver";
+		this.servidor = "jdbc:mysql://localhost/";
+		this.baseDatos = "tiendas";
+		this.usuario = "tiendas";
+		this.pass = "tiendas";
 
 		try {
-			
-			//leerXML();
+
+			// leerXML();
 
 			Class.forName(getForName());
 
@@ -134,16 +136,16 @@ public class Conexion {
 
 		try {
 			ResultSet resultado = sentencia.executeQuery(consulta);
-			
+
 			while (resultado.next()) {
-				
+
 				Tienda tienda1 = new Tienda();
-				
+
 				tienda1.setNombreTienda(resultado.getString(2));
 				tienda1.setNif(resultado.getString(1));
-				
+
 				tiendas.add(tienda1);
-				
+
 			}
 			resultado.close();
 		} catch (Exception e) {
@@ -153,9 +155,9 @@ public class Conexion {
 		return tiendas;
 	}
 
-	public ArrayList<String> dameArticulos() {
+	public ArrayList<Articulo> dameArticulos() {
 
-		ArrayList<String> articulos = new ArrayList<String>();
+		ArrayList<Articulo> articulos = new ArrayList<Articulo>();
 
 		String consulta = "Select distinct a.articulo, f.nombre from articulos a, fabricantes f "
 				+ "where  a.cod_fabricante = f.cod_fabricante;;";
@@ -164,8 +166,13 @@ public class Conexion {
 			ResultSet resultado = sentencia.executeQuery(consulta);
 
 			while (resultado.next()) {
-				articulos.add("ARTICULO: " + resultado.getString(1) +" FABRICANTE: " + resultado.getString(2));
+
+				Articulo articulo1 = new Articulo();
+				
+
+				articulos.add(articulo1);
 			}
+
 			resultado.close();
 		} catch (Exception e) {
 
@@ -177,9 +184,9 @@ public class Conexion {
 	/**
 	 *
 	 */
-	public String[] dameVentas(String nif) {
+	public ArrayList<Venta> dameVentas(String nif) {
 
-		String[] ventas = new String[dameNumeroFilasVentas(nif)];
+		ArrayList<Venta> ventas = new ArrayList<Venta>();
 
 		PreparedStatement enviaConsultaArticulosVentas;
 
@@ -191,15 +198,24 @@ public class Conexion {
 
 			ResultSet resultado = enviaConsultaArticulosVentas.executeQuery();
 
-			int i = 0;
-
 			while (resultado.next()) {
 
-				ventas[i] = resultado.getString(1) + " " + resultado.getString(2) + " " + resultado.getString(3) + " "
-						+ resultado.getString(4) + " " + resultado.getString(5) + " " + resultado.getString(6) + " "
-						+ resultado.getString(7) + " " + resultado.getString(8);
+				Venta venta1 = new Venta();
+				Fabricante fabricante1 = new Fabricante();
+				Articulo articulo1 = new Articulo();
 
-				i++;
+				venta1.setNif(resultado.getString(1));
+				venta1.setNombreArticulo(resultado.getString(2));
+				fabricante1.setNombre(resultado.getString(3));
+				venta1.setFabricante(fabricante1);
+				venta1.setPeso(resultado.getInt(4));
+				venta1.setCategoria(resultado.getString(5));
+				venta1.setFechaVenta(resultado.getString(6));
+				venta1.setUnidadesVendidas(resultado.getInt(7));
+				articulo1.setPrecioVenta(resultado.getDouble(8));
+				venta1.setArticulo(articulo1);
+
+				ventas.add(venta1);
 			}
 			resultado.close();
 		} catch (SQLException e) {
@@ -215,9 +231,9 @@ public class Conexion {
 		return ventas;
 	}
 
-	public String[] damePedidos(String nif) {
-
-		String[] pedidos = new String[dameNumeroFilasPedidos(nif)];
+	public ArrayList<Pedido> damePedidos(String nif) {
+		
+		ArrayList<Pedido> pedidos = new ArrayList<Pedido>();
 
 		PreparedStatement enviaConsultaArticulosPedidos;
 
@@ -231,14 +247,24 @@ public class Conexion {
 
 			ResultSet resultado = enviaConsultaArticulosPedidos.executeQuery();
 
-			int i = 0;
-
 			while (resultado.next()) {
-				pedidos[i] = resultado.getString(1) + " " + resultado.getString(2) + " " + resultado.getString(3) + " "
-						+ resultado.getString(4) + " " + resultado.getString(5) + " " + resultado.getString(6) + " "
-						+ resultado.getString(7) + " " + resultado.getString(8);
 
-				i++;
+				Pedido pedido1 = new Pedido();
+				Fabricante fabricante1 = new Fabricante();
+				Articulo articulo1 = new Articulo();
+
+				pedido1.setNif(resultado.getString(1));
+				pedido1.setNombreArticulo(resultado.getString(2));
+				fabricante1.setNombre(resultado.getString(3));
+				pedido1.setFabricante(fabricante1);
+				pedido1.setPeso(resultado.getInt(4));
+				pedido1.setCategoria(resultado.getString(5));
+				pedido1.setFechaPedido(resultado.getString(6));
+				pedido1.setUnidadesPedidas(resultado.getInt(7));
+				articulo1.setPrecioVenta(resultado.getDouble(8));
+				pedido1.setArticulo(articulo1);
+
+				pedidos.add(pedido1);
 			}
 			resultado.close();
 		} catch (SQLException e) {
@@ -247,99 +273,6 @@ public class Conexion {
 		}
 
 		return pedidos;
-	}
-
-	public ResultSet dameResultadosVentas(String nif) {
-
-		PreparedStatement enviaConsultaArticulosVentas;
-		ResultSet resultado = null;
-		String consulta = "select v.nif, v.articulo, f.nombre, v.peso, v.categoria, v.fecha_venta, v.unidades_vendidas, a.precio_venta from ventas v, articulos a, fabricantes f where nif=? and v.articulo = a.articulo and v.categoria = a.categoria and v.cod_fabricante = f.cod_fabricante;";
-		try {
-			enviaConsultaArticulosVentas = conexion.prepareStatement(consulta);
-			enviaConsultaArticulosVentas.setString(1, nif);
-
-			resultado = enviaConsultaArticulosVentas.executeQuery();
-		} catch (Exception e) {
-			// TODO: handle exception
-		}
-		return resultado;
-	}
-
-	public ResultSet dameResultadosPedidos(String nif) {
-
-		PreparedStatement enviaConsultaArticulosPedidos;
-		ResultSet resultado = null;
-		String consulta = "select p.nif, p.articulo, f.nombre, p.peso, p.categoria, p.fecha_pedido, p.unidades_pedidas, a.precio_costo from pedidos p, articulos a, fabricantes f where nif=? and p.articulo = a.articulo and p.categoria = a.categoria and p.cod_fabricante = f.cod_fabricante;";
-		try {
-			enviaConsultaArticulosPedidos = conexion.prepareStatement(consulta);
-			enviaConsultaArticulosPedidos.setString(1, nif);
-
-			resultado = enviaConsultaArticulosPedidos.executeQuery();
-		} catch (Exception e) {
-			// TODO: handle exception
-		}
-		return resultado;
-
-	}
-
-	public int dameNumeroFilasVentas(String nif) {
-
-		int numFilas = 0;
-
-		PreparedStatement enviaConsultaArticulosVentas;
-		ResultSet resultado = null;
-		String consulta = "Select count(*) from ventas v, articulos a, fabricantes f where nif=? and v.articulo = a.articulo and v.categoria = a.categoria and v.cod_fabricante = f.cod_fabricante;";
-		try {
-			enviaConsultaArticulosVentas = conexion.prepareStatement(consulta);
-			enviaConsultaArticulosVentas.setString(1, nif);
-
-			resultado = enviaConsultaArticulosVentas.executeQuery();
-
-			while (resultado.next()) {
-
-				numFilas = resultado.getInt(1);
-			}
-
-		} catch (Exception e) {
-			// TODO: handle exception
-		}
-
-		// Comprobación por consola si nos esta devolviendo bien las filas de la
-		// consulta
-		System.out.println(numFilas);
-
-		return numFilas;
-
-	}
-
-	public int dameNumeroFilasPedidos(String nif) {
-
-		int numFilas = 0;
-
-		PreparedStatement enviaConsultaArticulosPedidos;
-		ResultSet resultado = null;
-		String consulta = "Select count(*) from pedidos p, articulos a, fabricantes f where nif=? and p.articulo = a.articulo and p.categoria = a.categoria and p.cod_fabricante = f.cod_fabricante;";
-		try {
-			enviaConsultaArticulosPedidos = conexion.prepareStatement(consulta);
-			enviaConsultaArticulosPedidos.setString(1, nif);
-
-			resultado = enviaConsultaArticulosPedidos.executeQuery();
-
-			while (resultado.next()) {
-
-				numFilas = resultado.getInt(1);
-			}
-
-		} catch (Exception e) {
-			// TODO: handle exception
-		}
-
-		// Comprobación por consola si nos esta devolviendo bien las filas de la
-		// consulta
-		System.out.println(numFilas);
-
-		return numFilas;
-
 	}
 
 	public String sumaPrecioVenta(String nif) {
