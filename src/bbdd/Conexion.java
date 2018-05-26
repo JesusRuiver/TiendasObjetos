@@ -261,7 +261,7 @@ public class Conexion {
 				pedido1.setCategoria(resultado.getString(5));
 				pedido1.setFechaPedido(resultado.getString(6));
 				pedido1.setUnidadesPedidas(resultado.getInt(7));
-				articulo1.setPrecioVenta(resultado.getDouble(8));
+				articulo1.setPrecioCosto(resultado.getDouble(8));
 				pedido1.setArticulo(articulo1);
 
 				pedidos.add(pedido1);
