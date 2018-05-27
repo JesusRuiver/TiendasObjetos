@@ -1,6 +1,8 @@
 package clases;
 
-public class Articulo {
+import java.io.Serializable;
+
+public class Articulo implements Serializable{
 	
 	private String nombreArticulo;
 	private Fabricante fabricante;

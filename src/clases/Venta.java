@@ -1,6 +1,8 @@
 package clases;
 
-public class Venta {
+import java.io.Serializable;
+
+public class Venta implements Serializable {
 
 	private String nif;
 	private String nombreArticulo;

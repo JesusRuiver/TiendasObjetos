@@ -8,6 +8,8 @@ import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
 import javax.swing.JFrame;
@@ -16,6 +18,11 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import bbdd.Conexion;
+import clases.Articulo;
+import clases.Fabricante;
+import clases.Pedido;
+import clases.Tienda;
+import clases.Venta;
 
 import javax.swing.JComboBox;
 import javax.swing.JRadioButton;
@@ -27,8 +34,8 @@ public class EjercicioExportarImportar extends JFrame {
 	private JPanel contentPane;
 	private final ButtonGroup buttonGroup = new ButtonGroup();
 
-	private String[] ventas;
-	private String[] pedidos;
+	private ArrayList<Venta> ventas;
+	private ArrayList<Pedido> pedidos;
 
 	private Conexion miConexion = new Conexion();
 
@@ -104,11 +111,11 @@ public class EjercicioExportarImportar extends JFrame {
 		rbtnVentas.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 
-				String nif = troceaNif(cboxTiendas);
+				String nif = seleccionaNif(cboxTiendas);
 
 				ventas = miConexion.dameVentas(nif);
 
-				for (String i : ventas) {
+				for (Venta i : ventas) {
 					System.out.println(i);
 				}
 
@@ -118,11 +125,11 @@ public class EjercicioExportarImportar extends JFrame {
 		rbtnPedidos.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 
-				String nif = troceaNif(cboxTiendas);
+				String nif = seleccionaNif(cboxTiendas);
 
 				pedidos = miConexion.damePedidos(nif);
 
-				for (String i : pedidos) {
+				for (Pedido i : pedidos) {
 					System.out.println(i);
 				}
 
@@ -134,20 +141,20 @@ public class EjercicioExportarImportar extends JFrame {
 
 				if (rbtnVentas.isSelected() == true) {
 
-					String nif = troceaNif(cboxTiendas);
+					String nif = seleccionaNif(cboxTiendas);
 
 					ventas = miConexion.dameVentas(nif);
 
-					for (String i : ventas) {
+					for (Venta i : ventas) {
 						System.out.println(i);
 					}
 				} else {
 
-					String nif = troceaNif(cboxTiendas);
+					String nif = seleccionaNif(cboxTiendas);
 
 					pedidos = miConexion.damePedidos(nif);
 
-					for (String i : pedidos) {
+					for (Pedido i : pedidos) {
 						System.out.println(i);
 					}
 
@@ -166,11 +173,38 @@ public class EjercicioExportarImportar extends JFrame {
 
 						FileOutputStream fileout = new FileOutputStream(fichero);
 
-						DataOutputStream dataOS = new DataOutputStream(fileout);
-
-						for (int i = 0; i < ventas.length; i++) {
-
-							dataOS.writeUTF(ventas[i]); // inserta nombre
+						ObjectOutputStream dataOS = new ObjectOutputStream(fileout);
+						
+						for (int i = 0; i < ventas.size(); i++) {
+											
+							Venta venta1 = new Venta();
+							Fabricante fabricante1 = new Fabricante();
+							Articulo articulo1 = new Articulo();
+							
+							venta1.setNif(ventas.get(i).getNif());
+							venta1.setNombreArticulo(ventas.get(i).getNombreArticulo());
+							fabricante1.setNombre(ventas.get(i).getFabricante().getNombre());
+							venta1.setFabricante(fabricante1);
+							venta1.setPeso(ventas.get(i).getPeso());
+							venta1.setCategoria(ventas.get(i).getCategoria());
+							venta1.setFechaVenta(ventas.get(i).getFechaVenta());
+							venta1.setUnidadesVendidas(ventas.get(i).getUnidadesVendidas());
+							articulo1.setPrecioVenta(ventas.get(i).getArticulo().getPrecioVenta());
+							venta1.setArticulo(articulo1);
+							
+							
+							/*dataOS.writeObject(ventas.get(i).getNif());
+							dataOS.writeObject(ventas.get(i).getNombreArticulo()); 
+							dataOS.writeObject(ventas.get(i).getFabricante().getNombre()); 
+							dataOS.writeObject(ventas.get(i).getPeso()); 
+							dataOS.writeObject(ventas.get(i).getCategoria()); 
+							dataOS.writeObject(ventas.get(i).getFechaVenta()); 
+							dataOS.writeObject(ventas.get(i).getUnidadesVendidas()); 
+							dataOS.writeObject(ventas.get(i).getArticulo().getPrecioVenta()); */
+							
+							dataOS.writeObject(venta1);
+							
+							
 						}
 						dataOS.close(); // cerrar stream
 
@@ -189,12 +223,11 @@ public class EjercicioExportarImportar extends JFrame {
 
 						FileOutputStream fileout = new FileOutputStream(fichero);
 
-						DataOutputStream dataOS = new DataOutputStream(fileout);
+						ObjectOutputStream dataOS = new ObjectOutputStream(fileout);
 
-						for (int i = 0; i < pedidos.length; i++) {
-
-							dataOS.writeUTF(pedidos[i]); // inserta nombre
-
+						for (int i = 0; i < pedidos.size(); i++) {
+														
+							dataOS.writeObject(pedidos.get(i)); // inserta nombre
 						}
 
 						dataOS.close(); // cerrar strem
@@ -220,13 +253,11 @@ public class EjercicioExportarImportar extends JFrame {
 
 						FileInputStream filein = new FileInputStream(fichero);
 
-						DataInputStream dataIS = new DataInputStream(filein);
-
-						String ventas;
+						ObjectInputStream dataIS = new ObjectInputStream(filein);
 
 						while (true) {
 
-							ventas = dataIS.readUTF();
+							ventas = dataIS.readObject();
 
 							System.out.println(ventas);
 						}
@@ -278,7 +309,7 @@ public class EjercicioExportarImportar extends JFrame {
 	/*-------------------------------------METODOS-----------------------------------*/
 
 	public void rellenaComboTiendas(Conexion miConexion, JComboBox cboxTiendas) {
-		ArrayList<String> tiendas = new ArrayList<String>();
+		ArrayList<Tienda> tiendas = new ArrayList<Tienda>();
 
 		tiendas = miConexion.dameTiendas();
 
@@ -287,15 +318,17 @@ public class EjercicioExportarImportar extends JFrame {
 		}
 	}
 
-	private String troceaNif(JComboBox cboxTiendas) {
+	private String seleccionaNif(JComboBox cboxTiendas) {
 
-		String tiendaYnif;
+		String nif;
 
-		tiendaYnif = cboxTiendas.getSelectedItem().toString().trim();
+		Tienda tienda1 = new Tienda();
 
-		String[] parteNif = tiendaYnif.trim().split(": ");
+		tienda1 = (Tienda) cboxTiendas.getSelectedItem();
 
-		String nif = parteNif[2];
+		nif = tienda1.getNif();
+
+		System.out.println(nif);
 
 		return nif;
 	}
