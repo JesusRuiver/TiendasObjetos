@@ -3,8 +3,6 @@ package ventanas;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -32,6 +30,8 @@ import javax.xml.transform.stream.StreamResult;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
 
 import bbdd.Conexion;
@@ -375,8 +375,7 @@ public class EjercicioExportarImportar extends JFrame {
 							// añadir fechaVenta
 							crearElemento("fechaVenta", ventas.get(i).getFechaVenta(), raiz, document);
 							// añadir unidadesVendidas
-							crearElemento("unidadesVendidas", ventas.get(i).getUnidadesVendidas() + "", raiz,
-									document);
+							crearElemento("unidadesVendidas", ventas.get(i).getUnidadesVendidas() + "", raiz, document);
 						}
 
 						Source source = new DOMSource(document);
@@ -401,7 +400,7 @@ public class EjercicioExportarImportar extends JFrame {
 					}
 
 				} else {
-					
+
 					DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 
 					DocumentBuilder builder;
@@ -430,8 +429,7 @@ public class EjercicioExportarImportar extends JFrame {
 							// añadir fechaPedido
 							crearElemento("fechaPedido", pedidos.get(i).getFechaPedido(), raiz, document);
 							// añadir unidadesPedidas
-							crearElemento("unidadesPedidas", pedidos.get(i).getUnidadesPedidas() + "", raiz,
-									document);
+							crearElemento("unidadesPedidas", pedidos.get(i).getUnidadesPedidas() + "", raiz, document);
 						}
 
 						Source source = new DOMSource(document);
@@ -455,9 +453,116 @@ public class EjercicioExportarImportar extends JFrame {
 						e1.printStackTrace();
 					}
 
-
 				}
 
+			}
+
+		});
+
+		btnImportarFicheroXML.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+
+				if (rbtnVentas.isSelected() == true) {
+
+					try {
+
+						DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+
+						DocumentBuilder builder = factory.newDocumentBuilder();
+						Document documento = builder.parse(new File("Ventas.xml"));
+						documento.getDocumentElement().normalize();
+
+						NodeList config = documento.getElementsByTagName("venta");
+
+						for (int i = 0; i < ventas.size(); i++) {
+
+							Node venta = config.item(i);
+
+							if (venta.getNodeType() == Node.ELEMENT_NODE) {
+								Element elemento = (Element) venta;
+
+								String nif = elemento.getElementsByTagName("nif").item(0).getTextContent();
+								String nombreArticulo = elemento.getElementsByTagName("nombreArticulo").item(0)
+										.getTextContent();
+								int codFabricante = Integer.parseInt(
+										elemento.getElementsByTagName("codFabricante").item(0).getTextContent());
+								int peso = Integer
+										.parseInt(elemento.getElementsByTagName("peso").item(0).getTextContent());
+								String categoria = elemento.getElementsByTagName("categoria").item(0).getTextContent();
+								String fechaVenta = elemento.getElementsByTagName("fechaVenta").item(0)
+										.getTextContent();
+								int unidadesVendidas = Integer.parseInt(
+										elemento.getElementsByTagName("unidadesVendidas").item(0).getTextContent());
+
+								/* Comprobamos si esta recogiedo los datos del XML */
+
+								System.out.println("Nif: " + nif);
+								System.out.println("Nombre Articulo: " + nombreArticulo);
+								System.out.println("Cod Fabricante: " + codFabricante);
+								System.out.println("Peso: " + peso);
+								System.out.println("Categoria: " + categoria);
+								System.out.println("Fecha Venta: " + fechaVenta);
+								System.out.println("Unidades Vendidas: " + unidadesVendidas);
+
+								miConexion.insertaVenta(nif, nombreArticulo, codFabricante, peso, categoria, fechaVenta,
+										unidadesVendidas);
+							}
+						}
+
+					} catch (Exception e) {
+
+					}
+
+				} else {
+					try {
+
+						DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+
+						DocumentBuilder builder = factory.newDocumentBuilder();
+						Document documento = builder.parse(new File("Pedidos.xml"));
+						documento.getDocumentElement().normalize();
+
+						NodeList config = documento.getElementsByTagName("pedido");
+
+						for (int i = 0; i < pedidos.size(); i++) {
+
+							Node pedido = config.item(i);
+
+							if (pedido.getNodeType() == Node.ELEMENT_NODE) {
+								Element elemento = (Element) pedido;
+
+								String nif = elemento.getElementsByTagName("nif").item(0).getTextContent();
+								String nombreArticulo = elemento.getElementsByTagName("nombreArticulo").item(0)
+										.getTextContent();
+								int codFabricante = Integer.parseInt(
+										elemento.getElementsByTagName("codFabricante").item(0).getTextContent());
+								int peso = Integer
+										.parseInt(elemento.getElementsByTagName("peso").item(0).getTextContent());
+								String categoria = elemento.getElementsByTagName("categoria").item(0).getTextContent();
+								String fechaPedido = elemento.getElementsByTagName("fechaPedido").item(0)
+										.getTextContent();
+								int unidadesPedidas = Integer.parseInt(
+										elemento.getElementsByTagName("unidadesPedidas").item(0).getTextContent());
+
+								/* Comprobamos si esta recogiedo los datos del XML */
+
+								System.out.println("Nif: " + nif);
+								System.out.println("Nombre Articulo: " + nombreArticulo);
+								System.out.println("Cod Fabricante: " + codFabricante);
+								System.out.println("Peso: " + peso);
+								System.out.println("Categoria: " + categoria);
+								System.out.println("Fecha Pedido: " + fechaPedido);
+								System.out.println("Unidades Pedidas: " + unidadesPedidas);
+
+								miConexion.insertaPedido(nif, nombreArticulo, codFabricante, peso, categoria,
+										fechaPedido, unidadesPedidas);
+							}
+						}
+					} catch (Exception e) {
+						// TODO: handle exception
+					}
+
+				}
 			}
 
 		});
