@@ -168,7 +168,6 @@ public class Conexion {
 			while (resultado.next()) {
 
 				Articulo articulo1 = new Articulo();
-				
 
 				articulos.add(articulo1);
 			}
@@ -181,10 +180,7 @@ public class Conexion {
 		return articulos;
 	}
 
-	/**
-	 *
-	 */
-	public ArrayList<Venta> dameVentas(String nif) {
+	public ArrayList<Venta> dameVentasParaTabla(String nif) {
 
 		ArrayList<Venta> ventas = new ArrayList<Venta>();
 
@@ -231,8 +227,51 @@ public class Conexion {
 		return ventas;
 	}
 
-	public ArrayList<Pedido> damePedidos(String nif) {
-		
+	public ArrayList<Venta> dameVentasParaImportar(String nif) {
+
+		ArrayList<Venta> ventas = new ArrayList<Venta>();
+
+		PreparedStatement enviaConsultaArticulosVentas;
+
+		String consulta = "select v.nif, v.articulo, v.cod_fabricante, v.peso, v.categoria, v.fecha_venta, v.unidades_vendidas from ventas v where nif=?;";
+
+		try {
+			enviaConsultaArticulosVentas = conexion.prepareStatement(consulta);
+			enviaConsultaArticulosVentas.setString(1, nif);
+
+			ResultSet resultado = enviaConsultaArticulosVentas.executeQuery();
+
+			while (resultado.next()) {
+
+				Venta venta1 = new Venta();
+
+				venta1.setNif(resultado.getString(1));
+				venta1.setNombreArticulo(resultado.getString(2));
+				venta1.setCodFabricante(resultado.getInt(3));
+				venta1.setPeso(resultado.getInt(4));
+				venta1.setCategoria(resultado.getString(5));
+				venta1.setFechaVenta(resultado.getString(6));
+				venta1.setUnidadesVendidas(resultado.getInt(7));
+
+				ventas.add(venta1);
+			}
+			resultado.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		// Bucle for each para ver las ventas
+		/*
+		 * for (String i : ventas) { System.out.println(i); }
+		 */
+
+		return ventas;
+
+	}
+
+	public ArrayList<Pedido> damePedidosParaTabla(String nif) {
+
 		ArrayList<Pedido> pedidos = new ArrayList<Pedido>();
 
 		PreparedStatement enviaConsultaArticulosPedidos;
@@ -273,6 +312,49 @@ public class Conexion {
 		}
 
 		return pedidos;
+	}
+
+	public ArrayList<Pedido> damePedidosParaImportar(String nif) {
+
+		ArrayList<Pedido> pedidos = new ArrayList<Pedido>();
+
+		PreparedStatement enviaConsultaArticulosVentas;
+
+		String consulta = "select p.nif, p.articulo, p.cod_fabricante, p.peso, p.categoria, p.fecha_pedido, p.unidades_pedidas from pedidos p where nif=?;";
+
+		try {
+			enviaConsultaArticulosVentas = conexion.prepareStatement(consulta);
+			enviaConsultaArticulosVentas.setString(1, nif);
+
+			ResultSet resultado = enviaConsultaArticulosVentas.executeQuery();
+
+			while (resultado.next()) {
+
+				Pedido pedido1 = new Pedido();
+
+				pedido1.setNif(resultado.getString(1));
+				pedido1.setNombreArticulo(resultado.getString(2));
+				pedido1.setCodFabricante(resultado.getInt(3));
+				pedido1.setPeso(resultado.getInt(4));
+				pedido1.setCategoria(resultado.getString(5));
+				pedido1.setFechaPedido(resultado.getString(6));
+				pedido1.setUnidadesPedidas(resultado.getInt(7));
+
+				pedidos.add(pedido1);
+			}
+			resultado.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		// Bucle for each para ver las ventas
+		/*
+		 * for (String i : ventas) { System.out.println(i); }
+		 */
+
+		return pedidos;
+
 	}
 
 	public String sumaPrecioVenta(String nif) {
@@ -333,6 +415,66 @@ public class Conexion {
 		}
 		System.out.println(totalPedidos);
 		return totalPedidos;
+	}
+
+	public void insertaVenta(String nif, String nombreArticulo, int codFabricante, int peso, String categoria,
+			String fechaVenta, int unidadesVendidas) {
+
+		PreparedStatement enviaConsultaInsertaVenta;
+
+		String consultaPreparadaInsertaVenta = "Insert into ventas values ( ?, ?, ?, ?, ?, ?, ?);";
+
+		try {
+
+			enviaConsultaInsertaVenta = conexion.prepareStatement(consultaPreparadaInsertaVenta);
+
+			enviaConsultaInsertaVenta.setString(1, nif);
+			enviaConsultaInsertaVenta.setString(2, nombreArticulo);
+			enviaConsultaInsertaVenta.setInt(3, codFabricante);
+			enviaConsultaInsertaVenta.setInt(4, peso);
+			enviaConsultaInsertaVenta.setString(5, categoria);
+			enviaConsultaInsertaVenta.setString(6, fechaVenta);
+			enviaConsultaInsertaVenta.setInt(7, unidadesVendidas);
+
+			int filas;
+
+			filas = enviaConsultaInsertaVenta.executeUpdate();
+			System.out.println("Filas afectadas: " + filas);
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public void insertaPedido(String nif, String nombreArticulo, int codFabricante, int peso, String categoria,
+			String fechaPedido, int unidadesPedidas) {
+
+		PreparedStatement enviaConsultaInsertaPedido;
+
+		String consultaPreparadaInsertaPedido = "Insert into pedidos values ( ?, ?, ?, ?, ?, ?, ?);";
+
+		try {
+
+			enviaConsultaInsertaPedido = conexion.prepareStatement(consultaPreparadaInsertaPedido);
+
+			enviaConsultaInsertaPedido.setString(1, nif);
+			enviaConsultaInsertaPedido.setString(2, nombreArticulo);
+			enviaConsultaInsertaPedido.setInt(3, codFabricante);
+			enviaConsultaInsertaPedido.setInt(4, peso);
+			enviaConsultaInsertaPedido.setString(5, categoria);
+			enviaConsultaInsertaPedido.setString(6, fechaPedido);
+			enviaConsultaInsertaPedido.setInt(7, unidadesPedidas);
+
+			int filas;
+
+			filas = enviaConsultaInsertaPedido.executeUpdate();
+			System.out.println("Filas afectadas: " + filas);
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	public Connection getConexion() {

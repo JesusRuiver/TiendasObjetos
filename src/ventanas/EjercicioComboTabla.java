@@ -197,7 +197,7 @@ public class EjercicioComboTabla extends JFrame {
 
 		ArrayList<Venta> ventas = new ArrayList<Venta>();
 
-		ventas = miConexion.dameVentas(nif);
+		ventas = miConexion.dameVentasParaTabla(nif);
 
 		String matrizInfo[][] = new String[ventas.size()][8];
 
@@ -231,7 +231,7 @@ public class EjercicioComboTabla extends JFrame {
 
 		ArrayList<Pedido> pedidos = new ArrayList<Pedido>();
 
-		pedidos = miConexion.damePedidos(nif);
+		pedidos = miConexion.damePedidosParaTabla(nif);
 
 		String matrizInfo[][] = new String[pedidos.size()][8];
 

@@ -113,7 +113,7 @@ public class EjercicioExportarImportar extends JFrame {
 
 				String nif = seleccionaNif(cboxTiendas);
 
-				ventas = miConexion.dameVentas(nif);
+				ventas = miConexion.dameVentasParaImportar(nif);
 
 				for (Venta i : ventas) {
 					System.out.println(i);
@@ -127,7 +127,7 @@ public class EjercicioExportarImportar extends JFrame {
 
 				String nif = seleccionaNif(cboxTiendas);
 
-				pedidos = miConexion.damePedidos(nif);
+				pedidos = miConexion.damePedidosParaImportar(nif);
 
 				for (Pedido i : pedidos) {
 					System.out.println(i);
@@ -143,7 +143,7 @@ public class EjercicioExportarImportar extends JFrame {
 
 					String nif = seleccionaNif(cboxTiendas);
 
-					ventas = miConexion.dameVentas(nif);
+					ventas = miConexion.dameVentasParaImportar(nif);
 
 					for (Venta i : ventas) {
 						System.out.println(i);
@@ -152,7 +152,7 @@ public class EjercicioExportarImportar extends JFrame {
 
 					String nif = seleccionaNif(cboxTiendas);
 
-					pedidos = miConexion.damePedidos(nif);
+					pedidos = miConexion.damePedidosParaImportar(nif);
 
 					for (Pedido i : pedidos) {
 						System.out.println(i);
@@ -174,37 +174,21 @@ public class EjercicioExportarImportar extends JFrame {
 						FileOutputStream fileout = new FileOutputStream(fichero);
 
 						ObjectOutputStream dataOS = new ObjectOutputStream(fileout);
-						
+
 						for (int i = 0; i < ventas.size(); i++) {
-											
+
 							Venta venta1 = new Venta();
-							Fabricante fabricante1 = new Fabricante();
-							Articulo articulo1 = new Articulo();
-							
+
 							venta1.setNif(ventas.get(i).getNif());
 							venta1.setNombreArticulo(ventas.get(i).getNombreArticulo());
-							fabricante1.setNombre(ventas.get(i).getFabricante().getNombre());
-							venta1.setFabricante(fabricante1);
+							venta1.setCodFabricante(ventas.get(i).getCodFabricante());
 							venta1.setPeso(ventas.get(i).getPeso());
 							venta1.setCategoria(ventas.get(i).getCategoria());
 							venta1.setFechaVenta(ventas.get(i).getFechaVenta());
 							venta1.setUnidadesVendidas(ventas.get(i).getUnidadesVendidas());
-							articulo1.setPrecioVenta(ventas.get(i).getArticulo().getPrecioVenta());
-							venta1.setArticulo(articulo1);
-							
-							
-							/*dataOS.writeObject(ventas.get(i).getNif());
-							dataOS.writeObject(ventas.get(i).getNombreArticulo()); 
-							dataOS.writeObject(ventas.get(i).getFabricante().getNombre()); 
-							dataOS.writeObject(ventas.get(i).getPeso()); 
-							dataOS.writeObject(ventas.get(i).getCategoria()); 
-							dataOS.writeObject(ventas.get(i).getFechaVenta()); 
-							dataOS.writeObject(ventas.get(i).getUnidadesVendidas()); 
-							dataOS.writeObject(ventas.get(i).getArticulo().getPrecioVenta()); */
-							
+
 							dataOS.writeObject(venta1);
-							
-							
+
 						}
 						dataOS.close(); // cerrar stream
 
@@ -226,14 +210,42 @@ public class EjercicioExportarImportar extends JFrame {
 						ObjectOutputStream dataOS = new ObjectOutputStream(fileout);
 
 						for (int i = 0; i < pedidos.size(); i++) {
-														
-							dataOS.writeObject(pedidos.get(i)); // inserta nombre
+
+							Pedido pedido1 = new Pedido();
+
+							Fabricante fabricante1 = new Fabricante();
+
+							Articulo articulo1 = new Articulo();
+
+							/*pedido1.setNif(pedidos.get(i).getNif());
+							pedido1.setNombreArticulo(pedidos.get(i).getNombreArticulo());
+
+							fabricante1.setNombre(pedidos.get(i).getFabricante().getNombre());
+							pedido1.setFabricante(fabricante1);
+
+							pedido1.setPeso(pedidos.get(i).getPeso());
+							pedido1.setCategoria(pedidos.get(i).getCategoria());
+							pedido1.setFechaPedido(pedidos.get(i).getFechaPedido());
+							pedido1.setUnidadesPedidas(pedidos.get(i).getUnidadesPedidas());
+
+							articulo1.setPrecioVenta(pedidos.get(i).getArticulo().getPrecioVenta());
+							pedido1.setArticulo(articulo1);*/
+							
+							pedido1.setNif(pedidos.get(i).getNif());
+							pedido1.setNombreArticulo(pedidos.get(i).getNombreArticulo());
+							pedido1.setCodFabricante(pedidos.get(i).getCodFabricante());
+							pedido1.setPeso(pedidos.get(i).getPeso());
+							pedido1.setCategoria(pedidos.get(i).getCategoria());
+							pedido1.setFechaPedido (pedidos.get(i).getFechaPedido());
+							pedido1.setUnidadesPedidas(pedidos.get(i).getUnidadesPedidas());
+
+							dataOS.writeObject(pedido1); // inserta nombre
 						}
 
 						dataOS.close(); // cerrar strem
-						
+
 						JOptionPane.showMessageDialog(null, "Exportado Fichero Pedidos");
-						
+
 						System.out.println("Exportado Fichero Pedidos");
 					} catch (Exception ex) {
 						// TODO: handle exception
@@ -257,15 +269,20 @@ public class EjercicioExportarImportar extends JFrame {
 
 						while (true) {
 
-							ventas = dataIS.readObject();
+							Venta venta1;
 
-							System.out.println(ventas);
+							venta1 = (Venta) dataIS.readObject();
+							
+							miConexion.insertaVenta(venta1.getNif(), venta1.getNombreArticulo(), venta1.getCodFabricante(),
+									venta1.getPeso(), venta1.getCategoria(), venta1.getFechaVenta(),venta1.getUnidadesVendidas());
+
+							System.out.println(venta1.getNif() + " " + venta1.getNombreArticulo());
 						}
-						// Funcion pero no me deja cerrar el DataInputStream
+						// Funciona pero no me deja cerrar el DataInputStream
 						// dataIS.close();
 
 					} catch (Exception ex) {
-						// TODO: handle exception
+						System.out.println("Los registros ya existen en la tabla ventas");
 					}
 
 				} else {
@@ -276,21 +293,24 @@ public class EjercicioExportarImportar extends JFrame {
 
 						FileInputStream filein = new FileInputStream(fichero);
 
-						DataInputStream dataIS = new DataInputStream(filein);
-
-						String pedidos;
+						ObjectInputStream dataIS = new ObjectInputStream(filein);
 
 						while (true) {
 
-							pedidos = dataIS.readUTF();
+							Pedido pedido1;
+							
+							pedido1 = (Pedido) dataIS.readObject();
+							
+							miConexion.insertaPedido(pedido1.getNif(), pedido1.getNombreArticulo(), pedido1.getCodFabricante(),
+									pedido1.getPeso(), pedido1.getCategoria(), pedido1.getFechaPedido(),pedido1.getUnidadesPedidas());
 
-							System.out.println(pedidos);
+							System.out.println(pedido1.getNif() + " " + pedido1.getNombreArticulo());
 						}
 						// Funcion pero no me deja cerrar el DataInputStream
 						// dataIS.close();
 
 					} catch (Exception ex) {
-						// TODO: handle exception
+						System.out.println("Los registros ya existen en la tabla pedidos");
 					}
 
 				}
