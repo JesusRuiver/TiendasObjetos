@@ -96,9 +96,7 @@ public class Articulo implements Serializable{
 
 	@Override
 	public String toString() {
-		return "Articulo [nombreArticulo=" + nombreArticulo + ", fabricante=" + fabricante + ", codFabricante="
-				+ codFabricante + ", peso=" + peso + ", categoria=" + categoria + ", precioVenta=" + precioVenta
-				+ ", precioCosto=" + precioCosto + ", existencias=" + existencias + "]";
+		return "Articulo: " + getNombreArticulo() + " Fabricante: " + getFabricante().getNombre();
 	}
 
 	

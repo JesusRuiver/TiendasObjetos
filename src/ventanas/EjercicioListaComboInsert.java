@@ -8,6 +8,8 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import bbdd.Conexion;
+import clases.Articulo;
+import clases.Tienda;
 
 import javax.swing.JScrollPane;
 import javax.swing.JList;
@@ -138,7 +140,7 @@ public class EjercicioListaComboInsert extends JFrame {
 	// ------------------------------------------METODOS-----------------------------------------//
 
 	private void rellenaComboBoxArticulos(JComboBox cboxArticulos) {
-		ArrayList<String> articulos = new ArrayList<String>();
+		ArrayList<Articulo> articulos = new ArrayList<Articulo>();
 		
 		articulos = miConexion.dameArticulos();
 		
@@ -150,9 +152,9 @@ public class EjercicioListaComboInsert extends JFrame {
 
 	private void rellenaListaTiendas(JList listTiendas) {
 
-		DefaultListModel<String> modeloLista = new DefaultListModel<String>();
+		DefaultListModel<Tienda> modeloLista = new DefaultListModel<Tienda>();
 
-		ArrayList<String> datos = new ArrayList<String>();
+		ArrayList<Tienda> datos = new ArrayList<Tienda>();
 
 		datos = miConexion.dameTiendas();
 

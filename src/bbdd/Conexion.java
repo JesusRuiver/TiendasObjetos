@@ -168,6 +168,11 @@ public class Conexion {
 			while (resultado.next()) {
 
 				Articulo articulo1 = new Articulo();
+				Fabricante fabricante1 = new Fabricante();
+				
+				articulo1.setNombreArticulo(resultado.getString(1));
+				fabricante1.setNombre(resultado.getString(2));
+				articulo1.setFabricante(fabricante1);
 
 				articulos.add(articulo1);
 			}
