@@ -23,6 +23,8 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.event.ListSelectionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import javax.swing.JRadioButton;
+import javax.swing.ButtonGroup;
 
 public class EjercicioListaComboInsert extends JFrame {
 
@@ -31,6 +33,7 @@ public class EjercicioListaComboInsert extends JFrame {
 	private JTextField textField_1;
 
 	private Conexion miConexion = new Conexion();
+	private final ButtonGroup buttonGroup = new ButtonGroup();
 
 	/**
 	 * Launch the application.
@@ -116,6 +119,17 @@ public class EjercicioListaComboInsert extends JFrame {
 		rellenaListaTiendas(listTiendas);
 
 		rellenaComboBoxArticulos(cboxArticulos);
+		
+		JRadioButton rbtnVentas = new JRadioButton("Ventas");
+		buttonGroup.add(rbtnVentas);
+		rbtnVentas.setSelected(true);
+		rbtnVentas.setBounds(389, 64, 109, 23);
+		contentPane.add(rbtnVentas);
+		
+		JRadioButton rbtnPedidos = new JRadioButton("Pedidos");
+		buttonGroup.add(rbtnPedidos);
+		rbtnPedidos.setBounds(500, 64, 109, 23);
+		contentPane.add(rbtnPedidos);
 
 		listTiendas.addListSelectionListener(new ListSelectionListener() {
 			public void valueChanged(ListSelectionEvent e) {
