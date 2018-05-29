@@ -29,12 +29,25 @@ import javax.swing.ButtonGroup;
 public class EjercicioListaComboInsert extends JFrame {
 
 	private JPanel contentPane;
-	private JTextField textField;
-	private JTextField textField_1;
+	private JTextField txtFecha;
+	private JTextField txtCategoria;
+
+	private JList<Tienda> listTiendas = new JList();
+	private JSpinner spinPeso = new JSpinner();
+	private JSpinner spinUnidades = new JSpinner();
 
 	private Conexion miConexion = new Conexion();
 	private final ButtonGroup buttonGroup = new ButtonGroup();
-
+	
+	private String nifTienda = null; 
+	private String nombreArticulo;
+	private int codFabricante;
+	private int peso;
+	private int unidades;
+	private String fecha;
+	private String categoria;
+	
+	
 	/**
 	 * Launch the application.
 	 */
@@ -69,7 +82,7 @@ public class EjercicioListaComboInsert extends JFrame {
 		scrollPane.setBounds(26, 34, 294, 308);
 		contentPane.add(scrollPane);
 
-		JList<Tienda> listTiendas = new JList();
+		listTiendas = new JList();
 
 		scrollPane.setViewportView(listTiendas);
 
@@ -78,38 +91,38 @@ public class EjercicioListaComboInsert extends JFrame {
 		cboxArticulos.setBounds(379, 34, 267, 20);
 		contentPane.add(cboxArticulos);
 
-		JSpinner spinner = new JSpinner();
-		spinner.setBounds(539, 91, 107, 20);
-		contentPane.add(spinner);
+		spinPeso = new JSpinner();
+		spinPeso.setBounds(539, 91, 107, 20);
+		contentPane.add(spinPeso);
 
-		JSpinner spinner_1 = new JSpinner();
-		spinner_1.setBounds(539, 153, 107, 20);
-		contentPane.add(spinner_1);
+		spinUnidades = new JSpinner();
+		spinUnidades.setBounds(539, 153, 107, 20);
+		contentPane.add(spinUnidades);
 
-		textField = new JTextField();
-		textField.setBounds(539, 223, 107, 20);
-		contentPane.add(textField);
-		textField.setColumns(10);
+		txtFecha = new JTextField();
+		txtFecha.setBounds(539, 223, 107, 20);
+		contentPane.add(txtFecha);
+		txtFecha.setColumns(10);
 
-		textField_1 = new JTextField();
-		textField_1.setColumns(10);
-		textField_1.setBounds(539, 273, 107, 20);
-		contentPane.add(textField_1);
+		txtCategoria = new JTextField();
+		txtCategoria.setColumns(10);
+		txtCategoria.setBounds(539, 273, 107, 20);
+		contentPane.add(txtCategoria);
 
 		JLabel lbPeso = new JLabel("Peso");
-		lbPeso.setBounds(410, 94, 46, 14);
+		lbPeso.setBounds(389, 94, 46, 14);
 		contentPane.add(lbPeso);
 
 		JLabel lbunidades = new JLabel("Unidades");
-		lbunidades.setBounds(410, 156, 46, 14);
+		lbunidades.setBounds(389, 156, 64, 14);
 		contentPane.add(lbunidades);
 
 		JLabel lbFecha = new JLabel("Fecha");
-		lbFecha.setBounds(410, 226, 46, 14);
+		lbFecha.setBounds(389, 226, 46, 14);
 		contentPane.add(lbFecha);
 
 		JLabel lbCategoria = new JLabel("Categoria");
-		lbCategoria.setBounds(410, 276, 64, 14);
+		lbCategoria.setBounds(389, 276, 64, 14);
 		contentPane.add(lbCategoria);
 
 		JButton btnInsertarArticulo = new JButton("Insertar");
@@ -135,8 +148,6 @@ public class EjercicioListaComboInsert extends JFrame {
 
 			public void valueChanged(ListSelectionEvent e) {
 
-				String nifTienda = null;
-
 				Tienda tienda1 = new Tienda();
 
 				if (e.getValueIsAdjusting()) {
@@ -146,28 +157,52 @@ public class EjercicioListaComboInsert extends JFrame {
 					nifTienda = tienda1.getNif();
 
 					System.out.println(nifTienda);
+
 				}
 
 			}
+
 		});
 
 		cboxArticulos.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				
-				String articulo;
-				int codFabricante;
-				
+
 				Articulo articulo1 = new Articulo();
-				
-				articulo1 = (Articulo)cboxArticulos.getSelectedItem();
-				
-				articulo = articulo1.getNombreArticulo();
-				
+
+				articulo1 = (Articulo) cboxArticulos.getSelectedItem();
+
+				nombreArticulo = articulo1.getNombreArticulo();
+
 				codFabricante = articulo1.getCodFabricante();
-				
-				System.out.println(articulo + " " + codFabricante);
 
 			}
+		});
+
+		btnInsertarArticulo.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				
+
+				peso = (int)spinPeso.getValue();
+
+				unidades = (int)spinUnidades.getValue();
+
+				fecha = txtFecha.getText();
+
+				categoria = txtCategoria.getText();
+
+				if (rbtnVentas.isSelected() == true) {
+
+					miConexion.insertaVenta(nifTienda, nombreArticulo, codFabricante, peso, categoria, fecha, unidades);
+					
+				} else {
+					
+					miConexion.insertaPedido(nifTienda, nombreArticulo, codFabricante, peso, categoria, fecha, unidades);
+				}
+				
+				System.out.println(nifTienda + nombreArticulo + codFabricante + peso + unidades + fecha + categoria);
+
+			}
+
 		});
 
 	}
@@ -199,4 +234,5 @@ public class EjercicioListaComboInsert extends JFrame {
 
 		listTiendas.setModel(modeloLista);
 	}
+
 }
