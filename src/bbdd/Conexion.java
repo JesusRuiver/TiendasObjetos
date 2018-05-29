@@ -159,7 +159,7 @@ public class Conexion {
 
 		ArrayList<Articulo> articulos = new ArrayList<Articulo>();
 
-		String consulta = "Select distinct a.articulo, f.nombre from articulos a, fabricantes f "
+		String consulta = "Select distinct a.articulo, f.nombre, a.cod_fabricante from articulos a, fabricantes f "
 				+ "where  a.cod_fabricante = f.cod_fabricante;;";
 
 		try {
@@ -173,6 +173,7 @@ public class Conexion {
 				articulo1.setNombreArticulo(resultado.getString(1));
 				fabricante1.setNombre(resultado.getString(2));
 				articulo1.setFabricante(fabricante1);
+				articulo1.setCodFabricante(resultado.getInt(3));
 
 				articulos.add(articulo1);
 			}

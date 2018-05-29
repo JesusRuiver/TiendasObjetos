@@ -69,7 +69,7 @@ public class EjercicioListaComboInsert extends JFrame {
 		scrollPane.setBounds(26, 34, 294, 308);
 		contentPane.add(scrollPane);
 
-		JList<String> listTiendas = new JList();
+		JList<Tienda> listTiendas = new JList();
 
 		scrollPane.setViewportView(listTiendas);
 
@@ -116,35 +116,56 @@ public class EjercicioListaComboInsert extends JFrame {
 		btnInsertarArticulo.setBounds(557, 327, 89, 23);
 		contentPane.add(btnInsertarArticulo);
 
-		rellenaListaTiendas(listTiendas);
-
-		rellenaComboBoxArticulos(cboxArticulos);
-		
 		JRadioButton rbtnVentas = new JRadioButton("Ventas");
 		buttonGroup.add(rbtnVentas);
 		rbtnVentas.setSelected(true);
 		rbtnVentas.setBounds(389, 64, 109, 23);
 		contentPane.add(rbtnVentas);
-		
+
 		JRadioButton rbtnPedidos = new JRadioButton("Pedidos");
 		buttonGroup.add(rbtnPedidos);
 		rbtnPedidos.setBounds(500, 64, 109, 23);
 		contentPane.add(rbtnPedidos);
 
+		rellenaListaTiendas(listTiendas);
+
+		rellenaComboBoxArticulos(cboxArticulos);
+
 		listTiendas.addListSelectionListener(new ListSelectionListener() {
+
 			public void valueChanged(ListSelectionEvent e) {
 
-			
+				String nifTienda = null;
+
+				Tienda tienda1 = new Tienda();
+
+				if (e.getValueIsAdjusting()) {
+
+					tienda1 = listTiendas.getSelectedValue();
+
+					nifTienda = tienda1.getNif();
+
+					System.out.println(nifTienda);
+				}
 
 			}
 		});
 
-
-
 		cboxArticulos.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-
 				
+				String articulo;
+				int codFabricante;
+				
+				Articulo articulo1 = new Articulo();
+				
+				articulo1 = (Articulo)cboxArticulos.getSelectedItem();
+				
+				articulo = articulo1.getNombreArticulo();
+				
+				codFabricante = articulo1.getCodFabricante();
+				
+				System.out.println(articulo + " " + codFabricante);
 
 			}
 		});
@@ -155,13 +176,13 @@ public class EjercicioListaComboInsert extends JFrame {
 
 	private void rellenaComboBoxArticulos(JComboBox cboxArticulos) {
 		ArrayList<Articulo> articulos = new ArrayList<Articulo>();
-		
+
 		articulos = miConexion.dameArticulos();
-		
-		for (int i = 0; i< articulos.size();i++){
+
+		for (int i = 0; i < articulos.size(); i++) {
 			cboxArticulos.addItem(articulos.get(i));
 		}
-		
+
 	}
 
 	private void rellenaListaTiendas(JList listTiendas) {
