@@ -16,6 +16,7 @@ import javax.swing.JList;
 import javax.swing.JComboBox;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
+import javax.swing.WindowConstants;
 import javax.swing.JLabel;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
@@ -36,18 +37,18 @@ public class EjercicioListaComboInsert extends JFrame {
 	private JSpinner spinPeso = new JSpinner();
 	private JSpinner spinUnidades = new JSpinner();
 
-	private Conexion miConexion = new Conexion();
+	private Conexion miConexion;
+
 	private final ButtonGroup buttonGroup = new ButtonGroup();
-	
-	private String nifTienda = null; 
+
+	private String nifTienda = null;
 	private String nombreArticulo;
 	private int codFabricante;
 	private int peso;
 	private int unidades;
 	private String fecha;
 	private String categoria;
-	
-	
+
 	/**
 	 * Launch the application.
 	 */
@@ -55,7 +56,7 @@ public class EjercicioListaComboInsert extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					EjercicioListaComboInsert frame = new EjercicioListaComboInsert();
+					EjercicioListaComboInsert frame = new EjercicioListaComboInsert(null);
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -67,9 +68,9 @@ public class EjercicioListaComboInsert extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public EjercicioListaComboInsert() {
+	public EjercicioListaComboInsert(Conexion conex) {
 
-		miConexion.conectar();
+		miConexion = conex;
 
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 721, 415);
@@ -180,11 +181,10 @@ public class EjercicioListaComboInsert extends JFrame {
 
 		btnInsertarArticulo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				
 
-				peso = (int)spinPeso.getValue();
+				peso = (int) spinPeso.getValue();
 
-				unidades = (int)spinUnidades.getValue();
+				unidades = (int) spinUnidades.getValue();
 
 				fecha = txtFecha.getText();
 
@@ -193,17 +193,20 @@ public class EjercicioListaComboInsert extends JFrame {
 				if (rbtnVentas.isSelected() == true) {
 
 					miConexion.insertaVenta(nifTienda, nombreArticulo, codFabricante, peso, categoria, fecha, unidades);
-					
+
 				} else {
-					
-					miConexion.insertaPedido(nifTienda, nombreArticulo, codFabricante, peso, categoria, fecha, unidades);
+
+					miConexion.insertaPedido(nifTienda, nombreArticulo, codFabricante, peso, categoria, fecha,
+							unidades);
 				}
-				
+
 				System.out.println(nifTienda + nombreArticulo + codFabricante + peso + unidades + fecha + categoria);
 
 			}
 
 		});
+
+		setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 
 	}
 

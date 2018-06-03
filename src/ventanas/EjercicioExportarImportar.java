@@ -43,6 +43,7 @@ import clases.Venta;
 
 import javax.swing.JComboBox;
 import javax.swing.JRadioButton;
+import javax.swing.WindowConstants;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 
@@ -54,7 +55,7 @@ public class EjercicioExportarImportar extends JFrame {
 	private ArrayList<Venta> ventas;
 	private ArrayList<Pedido> pedidos;
 
-	private Conexion miConexion = new Conexion();
+	private Conexion miConexion;
 
 	// private Document document;
 	// private Element raiz;
@@ -66,7 +67,7 @@ public class EjercicioExportarImportar extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					EjercicioExportarImportar frame = new EjercicioExportarImportar();
+					EjercicioExportarImportar frame = new EjercicioExportarImportar(null);
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -78,9 +79,9 @@ public class EjercicioExportarImportar extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public EjercicioExportarImportar() {
+	public EjercicioExportarImportar(Conexion conex) {
 
-		miConexion.conectar();
+		miConexion = conex;
 
 		/*------------------------COMPONENTES DE LA VENTANA----------------------------*/
 
@@ -566,6 +567,8 @@ public class EjercicioExportarImportar extends JFrame {
 			}
 
 		});
+		
+		setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 	}
 
 	/*-------------------------------------METODOS-----------------------------------*/

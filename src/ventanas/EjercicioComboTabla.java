@@ -20,9 +20,12 @@ import javax.swing.JComboBox;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.WindowConstants;
 import javax.swing.ButtonGroup;
 import javax.swing.JLabel;
 import java.awt.Font;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 public class EjercicioComboTabla extends JFrame {
 
@@ -33,7 +36,7 @@ public class EjercicioComboTabla extends JFrame {
 
 	private JScrollPane scrollPaneTabla;
 
-	private Conexion miConexion = new Conexion();
+	private Conexion miConexion;
 
 	/**
 	 * Launch the application.
@@ -42,7 +45,7 @@ public class EjercicioComboTabla extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					EjercicioComboTabla frame = new EjercicioComboTabla();
+					EjercicioComboTabla frame = new EjercicioComboTabla(null);
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -54,9 +57,10 @@ public class EjercicioComboTabla extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public EjercicioComboTabla() {
-
-		miConexion.conectar();
+	public EjercicioComboTabla(Conexion conex) {
+		
+		
+		miConexion = conex;
 
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 866, 505);
@@ -153,6 +157,8 @@ public class EjercicioComboTabla extends JFrame {
 				}
 			}
 		});
+		
+		setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 
 	}
 
