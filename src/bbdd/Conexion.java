@@ -58,7 +58,7 @@ public class Conexion {
 
 		try {
 
-			// leerXML();
+			//leerXML();
 
 			Class.forName(getForName());
 
