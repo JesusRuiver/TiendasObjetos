@@ -1,6 +1,11 @@
 package bbdd;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -58,7 +63,9 @@ public class Conexion {
 
 		try {
 
-			//leerXML();
+			// leerXML();
+			// leerTXT();
+			//leerFicheroAleatorio(); Este metodo no funciona
 
 			Class.forName(getForName());
 
@@ -112,6 +119,120 @@ public class Conexion {
 
 		}
 
+	}
+
+	public void leerTXT() {
+
+		try {
+			BufferedReader fichero = new BufferedReader(new FileReader("DatosConexionTexto.txt"));
+
+			String linea;
+
+			while ((linea = fichero.readLine()) != null) {
+
+				this.forName = linea;
+				linea = fichero.readLine();
+				this.servidor = linea;
+				linea = fichero.readLine();
+				this.baseDatos = linea;
+				linea = fichero.readLine();
+				this.usuario = linea;
+				linea = fichero.readLine();
+				this.pass = linea;
+			}
+
+			/* Comprobamos si esta recogiedo los datos del TXT */
+
+			System.out.println("Conector Driver JDBC: " + forName);
+			System.out.println("Servidor: " + servidor);
+			System.out.println("Nombre de la Base de Datos: " + baseDatos);
+			System.out.println("Usuario: " + usuario);
+			System.out.println("Clave: " + pass);
+
+			fichero.close();
+
+		} catch (FileNotFoundException fn) {
+			System.out.println("No se encuentra el fichero");
+		} catch (IOException io) {
+			System.out.println("Error de E/S ");
+		}
+	}
+
+	public void leerFicheroAleatorio() {
+		try {
+			File fichero = new File("DatosConexionAleatorio.dat");
+
+			// declara el fichero de acceso aleatorio
+			RandomAccessFile file = new RandomAccessFile(fichero, "r");
+			//
+			int id, posicion;
+
+			char forname[] = new char[40], auxForname;
+			char servidor[] = new char[40], auxServidor;
+			char bbdd[] = new char[40], auxBbdd;
+			char usuario[] = new char[40], auxUsuario;
+			char pass[] = new char[40], auxPass;
+
+			posicion = 0; // para situarnos al principio
+
+			for (;;) { // recorro el fichero
+
+				file.seek(posicion); // nos posicionamos en posicion
+
+				id = file.readInt(); // obtengo id
+
+				for (int i = 0; i < forname.length; i++) {
+
+					auxForname = file.readChar();// recorro uno a uno los
+													// caracteres
+													// del forname
+					forname[i] = auxForname; // los voy guardando en el array
+
+					auxServidor = file.readChar();// recorro uno a uno los
+													// caracteres del forname
+					servidor[i] = auxServidor; // los voy guardando en el array
+
+					auxBbdd = file.readChar();// recorro uno a uno los
+												// caracteres
+												// del forname
+					bbdd[i] = auxBbdd; // los voy guardando en el array
+
+					auxUsuario = file.readChar();// recorro uno a uno los
+													// caracteres
+													// del forname
+					usuario[i] = auxUsuario; // los voy guardando en el array
+
+					auxPass = file.readChar();// recorro uno a uno los
+												// caracteres
+												// del forname
+					forname[i] = auxPass; // los voy guardando en el array
+				}
+
+				String fornameStr = new String(forname);// convierto a String el
+														// array
+				String servidorStr = new String(servidor);// convierto a String
+															// el
+															// array
+				String bbddStr = new String(bbdd);// convierto a String el array
+				String usuarioStr = new String(usuario);// convierto a String el
+														// array
+				String passStr = new String(pass);// convierto a String el array
+
+				System.out.println("Id: " + id + "forname: " + fornameStr + ", servidor: " + servidorStr + ", BBDD: "
+						+ bbddStr + ", Usuario: " + usuarioStr + ", Pass: " + passStr);
+
+				posicion = posicion + 84; // me posiciono para el sig empleado
+											// Cada empleado ocupa 36 bytes
+											// (4+20+20+20+20)
+				// Si he recorrido todos los bytes salgo del for
+				if (file.getFilePointer() == file.length())
+					break;
+
+			} // fin bucle for
+			file.close(); // cerrar fichero
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
 	}
 
 	public void cerrarConexion() {
@@ -169,7 +290,7 @@ public class Conexion {
 
 				Articulo articulo1 = new Articulo();
 				Fabricante fabricante1 = new Fabricante();
-				
+
 				articulo1.setNombreArticulo(resultado.getString(1));
 				fabricante1.setNombre(resultado.getString(2));
 				articulo1.setFabricante(fabricante1);
@@ -452,7 +573,7 @@ public class Conexion {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public void insertaPedido(String nif, String nombreArticulo, int codFabricante, int peso, String categoria,
 			String fechaPedido, int unidadesPedidas) {
 
